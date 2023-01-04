@@ -12,17 +12,17 @@
     apiVersion: v1
     kind : Pod
     metadata:
-        creationTimestamp: null
-        labels:
-            run: redis
-        name: redis
+      creationTimestamp: null
+      labels:
+        run: redis
+      name: redis
     spec:
-        containers:
-          - image: redis
-            name: redis
-            resources: {}
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
+      containers:
+        - image: redis
+          name: redis
+          resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
     status: {}
     ```
 
@@ -36,23 +36,50 @@
     apiVersion: v1
     kind: ReplicationController
     metadata:
-        name: myapp-rc
-        labels:
+      name: myapp-rc
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+      template:
+        metadata:
+          name: myapp-pod
+          labels:
             app: myapp
             type: front-end
-    spec:
-        template:
-            metadata:
-                name: myapp-pod
-                labels:
-                    app: myapp
-                    type: front-end
-                specs:
-                    containers:
-                      - name: nginx-container
-                        image: nginx
-        replicas: 3
+          specs:
+            containers:
+              - name: nginx-container
+                image: nginx
+      replicas: 3
     ```
 
 * Creating a ReplicationController using a yaml file - `kubectl create -f rc-defination.yml`
 * Get all replication controllers - `kubectl get replicationcontroller`
+
+* Contents of a ReplicaSet yaml file
+    ```yaml
+    apiVersion: apps/v1
+    kind: ReplicaSet
+    metadata:
+      name: myapp-replicaset
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+      template:
+        metadata:
+          name: myapp-pod
+          labels:
+            app: myapp
+            type: front-end
+          spec:
+            containers:
+              - name: nginx-container
+                image: nginx
+      replicas: 3
+      selector:
+        matchLabels:
+          type: front-end
+    ```
+  
